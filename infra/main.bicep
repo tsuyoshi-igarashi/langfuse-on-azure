@@ -1,4 +1,10 @@
-targetScope = 'subscription'
+// targetScope = 'subscription'
+targetScope = 'resourceGroup'
+
+// @minLength(1)
+// @maxLength(64)
+// @description('Name of the resource group')
+// param resourceGroupName string
 
 @minLength(1)
 @maxLength(64)
@@ -34,16 +40,16 @@ var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }
 var prefix = '${name}-${resourceToken}'
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${name}-resource-group'
-  location: location
-  tags: tags
-}
+// resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+//   name: '${name}-resource-group'
+//   location: location
+//   tags: tags
+// }
 
 // Store secrets in a keyvault
 module keyVault './core/security/keyvault.bicep' = {
   name: 'keyvault'
-  scope: resourceGroup
+  // scope: resourceGroup()
   params: {
     name: '${replace(take(prefix, 17), '-', '')}-vault'
     location: location
@@ -54,7 +60,7 @@ module keyVault './core/security/keyvault.bicep' = {
 // Give the principal access to KeyVault
 module principalKeyVaultAccess './core/security/keyvault-access.bicep' = {
   name: 'keyvault-access-${principalId}'
-  scope: resourceGroup
+  // scope: resourceGroup
   params: {
     keyVaultName: keyVault.outputs.name
     principalId: principalId
@@ -63,7 +69,7 @@ module principalKeyVaultAccess './core/security/keyvault-access.bicep' = {
 
 module postgresServer 'core/database/flexibleserver.bicep' = {
   name: 'postgresql'
-  scope: resourceGroup
+  // scope: resourceGroup
   params: {
     name: '${prefix}-postgresql'
     location: location
@@ -85,7 +91,7 @@ module postgresServer 'core/database/flexibleserver.bicep' = {
 
 module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   name: 'loganalytics'
-  scope: resourceGroup
+  // scope: resourceGroup
   params: {
     name: '${prefix}-loganalytics'
     location: location
@@ -95,7 +101,7 @@ module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
 
 module containerAppEnv 'core/host/container-app-env.bicep' = {
   name: 'container-env'
-  scope: resourceGroup
+  // scope: resourceGroup
   params: {
     name: containerAppName
     location: location
@@ -107,7 +113,7 @@ module containerAppEnv 'core/host/container-app-env.bicep' = {
 var containerAppName = '${prefix}-app'
 module containerApp 'core/host/container-app.bicep' = {
   name: 'container'
-  scope: resourceGroup
+  // scope: resourceGroup
   params: {
     name: containerAppName
     location: location
@@ -187,7 +193,7 @@ var secrets = [
 
 module keyVaultSecrets './core/security/keyvault-secret.bicep' = [for secret in secrets: {
   name: 'keyvault-secret-${secret.name}'
-  scope: resourceGroup
+  // scope: resourceGroup
   params: {
     keyVaultName: keyVault.outputs.name
     name: secret.name
