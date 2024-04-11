@@ -4,20 +4,20 @@ param location string = resourceGroup().location    // Location of the resource 
 param tags object = {}                              // Tags to be assigned to the container app environment
 
 param logAnalyticsWorkspaceName string              // Name of the existing Log Analytics workspace
-// param vnetName string                               // Name of the existing VNet
-// param subnetName string                             // Name of the subnet in the VNet
+// param vnetName string                               // Name of the existing VNet       4/11追加：vnet上に作成する場合コメントをはずす
+// param subnetName string                             // Name of the subnet in the VNet  4/11追加：vnet上に作成する場合コメントをはずす
 
 // Reference to the existing Log Analytics workspace
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-// // Reference to the existing VNet
+// // Reference to the existing VNet                4/11追加：vnet上に作成する場合コメントをはずす
 // resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
 //   name: vnetName
 // }
 
-// // Reference to the existing subnet in the VNet
+// // Reference to the existing subnet in the VNet   4/11追加：vnet上に作成する場合コメントをはずす
 // resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
 //   parent: vnet
 //   name: subnetName
