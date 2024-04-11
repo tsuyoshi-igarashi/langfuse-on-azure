@@ -67,7 +67,8 @@ module postgresServer 'core/database/flexibleserver.bicep' = {
   name: 'postgresql'
   // scope: resourceGroup
   params: {
-    name: '${prefix}-postgresql'
+    // name: '${prefix}-postgresql'
+    name: '${name}-postgresql'
     location: location
     tags: tags
     sku: {
@@ -90,7 +91,8 @@ module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   name: 'loganalytics'
   // scope: resourceGroup
   params: {
-    name: '${prefix}-loganalytics'
+    // name: '${prefix}-loganalytics'
+    name: '${name}-loganalytics'
     location: location
     tags: tags
   }
@@ -105,13 +107,14 @@ module containerAppEnv 'core/host/container-app-env.bicep' = {
     location: location
     tags: tags
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
-    vnetName: 'igarashi-vnet-01'
+    vnetName: '${name}-vnet'
     subnetName: 'LangfuseSubnet'
   }
 }
 
 // Name of the container app
-var containerAppName = '${prefix}-app'
+// var containerAppName = '${prefix}-app'
+var containerAppName = '${name}-app'
 
 // Module for creating a container app
 module containerApp 'core/host/container-app.bicep' = {
