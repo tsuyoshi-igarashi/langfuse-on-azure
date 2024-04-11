@@ -107,8 +107,8 @@ module containerAppEnv 'core/host/container-app-env.bicep' = {
     location: location
     tags: tags
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
-    vnetName: '${name}-vnet'
-    subnetName: 'LangfuseSubnet'
+    // vnetName: '${name}-vnet'           //4/11追加：vnet上に作成する場合コメントをはずす
+    // subnetName: 'LangfuseSubnet'       //4/11追加：vnet上に作成する場合コメントをはずす
   }
 }
 
