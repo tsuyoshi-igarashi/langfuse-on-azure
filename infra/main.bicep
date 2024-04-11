@@ -105,7 +105,7 @@ module containerAppEnv 'core/host/container-app-env.bicep' = {
     location: location
     tags: tags
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
-    vnetName: 'igarashi-vnet'
+    vnetName: 'igarashi-vnet-01'
     subnetName: 'igarashi-subnet-for-caenv'
   }
 }
