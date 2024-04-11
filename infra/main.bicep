@@ -1,11 +1,6 @@
 // targetScope = 'subscription'
 targetScope = 'resourceGroup'
 
-// @minLength(1)
-// @maxLength(64)
-// @description('Name of the resource group')
-// param resourceGroupName string
-
 @minLength(1)
 @maxLength(64)
 @description('Name to prefix all resources')
@@ -67,6 +62,7 @@ module principalKeyVaultAccess './core/security/keyvault-access.bicep' = {
   }
 }
 
+// Module for creating a PostgreSQL server
 module postgresServer 'core/database/flexibleserver.bicep' = {
   name: 'postgresql'
   // scope: resourceGroup
@@ -89,6 +85,7 @@ module postgresServer 'core/database/flexibleserver.bicep' = {
   }
 }
 
+// Module for creating a Log Analytics workspace
 module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   name: 'loganalytics'
   // scope: resourceGroup
@@ -99,6 +96,7 @@ module logAnalyticsWorkspace 'core/monitor/loganalytics.bicep' = {
   }
 }
 
+// Module for creating a container app environment
 module containerAppEnv 'core/host/container-app-env.bicep' = {
   name: 'container-env'
   // scope: resourceGroup
@@ -107,10 +105,15 @@ module containerAppEnv 'core/host/container-app-env.bicep' = {
     location: location
     tags: tags
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.outputs.name
+    vnetName: 'igarashi-vnet'
+    subnetName: 'igarashi-subnet-for-caenv'
   }
 }
 
+// Name of the container app
 var containerAppName = '${prefix}-app'
+
+// Module for creating a container app
 module containerApp 'core/host/container-app.bicep' = {
   name: 'container'
   // scope: resourceGroup
@@ -176,6 +179,7 @@ module containerApp 'core/host/container-app.bicep' = {
   }
 }
 
+// Secrets to be stored in Key Vault
 var secrets = [
   {
     name: 'DATABASEPASSWORD'
@@ -191,6 +195,7 @@ var secrets = [
   }
 ]
 
+// Module for creating secrets in Key Vault
 module keyVaultSecrets './core/security/keyvault-secret.bicep' = [for secret in secrets: {
   name: 'keyvault-secret-${secret.name}'
   // scope: resourceGroup
@@ -201,5 +206,8 @@ module keyVaultSecrets './core/security/keyvault-secret.bicep' = [for secret in 
   }
 }]
 
+// Output the URI of the service app
 output SERVICE_APP_URI string = containerApp.outputs.uri
+
+// Output the name of the Key Vault
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
